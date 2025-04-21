@@ -20,7 +20,6 @@ interface FilesUploadedProps {
 
 export default function FilesUploaded({
   files = [],
-  onReset,
   onRemoveFile,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAddMore,

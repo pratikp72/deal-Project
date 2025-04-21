@@ -1,4 +1,3 @@
-import Header1 from "../Header1";
 import ImageComponent from "./ImageComponent";
 import ImageSummary from "./ImageSummary";
 import Navbar from "../Navbar/Navbar";
@@ -13,7 +12,6 @@ export default function Deal(){
     return(<>
     
        <div className="min-h-screen bg-white ">
-       {/* <Header1/> */}
        <Navbar  navLinks={["Deal Overview","Workshop", "Pipeline", "Settings"]} pageType="deal" />
 
        <div className="px-8 py-8">
