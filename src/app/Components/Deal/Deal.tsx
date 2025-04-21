@@ -3,7 +3,7 @@ import ImageComponent from "./ImageComponent";
 import ImageSummary from "./ImageSummary";
 import Navbar from "../Navbar/Navbar";
 import Number from "./Number";
-import Header from "../ReauseComp/Header";
+import Header from "../common-components/Header";
 import SupplyPipeline from "./SupplyPipeline";
 
 export default function Deal(){

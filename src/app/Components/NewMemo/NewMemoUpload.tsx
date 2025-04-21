@@ -1,6 +1,9 @@
 // components/NewMemoUpload.tsx
 import { JSX, useRef, useState } from 'react';
 import FilesUploaded from './FileUpload';
+import { loaderService } from '@/app/Service/loader.service';
+import { useRouter } from 'next/navigation';
+
 
 // Define types for our file objects
 interface UploadedFile {
@@ -15,6 +18,8 @@ export default function NewMemoUpload(): JSX.Element {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [showUploadedFiles, setShowUploadedFiles] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
 
   const handleAreaClick = (): void => {
     // Trigger the hidden file input when the area is clicked
@@ -80,6 +85,15 @@ export default function NewMemoUpload(): JSX.Element {
     }
   };
 
+  const onSubmitUpload = async (): Promise<void> => {
+    loaderService.setLoaderState(true);
+    
+    setTimeout(() => {
+      loaderService.setLoaderState(false);
+      router.push('/deal')
+    }, 2000); // Simulate a delay for the upload process
+  }
+
   // Add more files to existing selection
   const addMoreFiles = (): void => {
     if (fileInputRef.current) {
@@ -123,6 +137,7 @@ export default function NewMemoUpload(): JSX.Element {
           }}
           onRemoveFile={removeFile}
           onAddMore={addMoreFiles}
+          onSubmit={onSubmitUpload}
         />
       )}
     </>

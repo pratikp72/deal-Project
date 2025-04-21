@@ -8,7 +8,7 @@ export default function ImageSummary() {
       <div className="p-6 flex-1 ">
 
         <div className="border-r-1 border-gray-200">
-        <h2 className="text-lg font-medium text-[#71717A] mb-2">Deal Summary</h2>
+        <h2 className="text-lg font-medium text-muted-foreground mb-2">Deal Summary</h2>
         <p className="text-black mb-4">
           280 Richards, fully leased to Amazon, aligns with HUSPP&apos;s strategy of acquiring prime logistics assets in 
           Brooklyn&apos;s high-demand Red Hook submarket. With 13 years remaining on the lease and 3% annual rent 

@@ -1,4 +1,6 @@
+'use client'
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 
 
 interface NavbarProps {
@@ -8,12 +10,19 @@ interface NavbarProps {
 
 export default function Navbar({ pageType,navLinks }: NavbarProps) {
 
+  const router = useRouter();
+
+
+  const goToHomePage = () => {
+    router.push('/')
+  }
+
 
     return(<>
     
     <div className=" bg-white px-2 py-4">
     {(pageType === "newmemo" || pageType === "deal") && (
-          <img src="arrow-left.png" className="px-4" alt="Back Arrow" />
+          <img src="arrow-left.png" className="px-4" alt="Back Arrow" onClick={goToHomePage}/>
         )}
       <Head>
         <title>Upload New Deal</title>

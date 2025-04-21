@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Navbar from '../Navbar/Navbar';
-import Header from '../ReauseComp/Header';
+import Header from '../common-components/Header';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import FilesUploaded from './FileUpload';
 import NewMemoUpload from './NewMemoUpload';
+import { loaderService } from '@/app/Service/loader.service';
+
 
 export default function Upload() {
 
@@ -19,6 +21,17 @@ export default function Upload() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const handleLoaderChange = (state: boolean) => {
+      setIsLoading(state);
+    };
+
+    loaderService.subscribe(handleLoaderChange);
+    return () => {
+        loaderService.unsubscribe(handleLoaderChange);
+    };
+  }, [loaderService.getLoaderState()]);
 
 
   return (

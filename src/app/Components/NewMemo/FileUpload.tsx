@@ -34,6 +34,7 @@ export default function FilesUploaded({
       fileType.includes('spreadsheet') || 
       fileType.includes('excel') || 
       fileType.includes('xlsx') || 
+      fileType.includes('csv') || 
       fileType.includes('xls')
     ) {
       return "excel.png";
@@ -55,7 +56,7 @@ export default function FilesUploaded({
     
     // Then send to your backend
     // const response = await fetch('/api/upload', {
-    //   method: 'POST',
+    //   method: 'POST',  
     //   body: formData
     // });
 
@@ -66,7 +67,7 @@ export default function FilesUploaded({
   return (
     <div className="flex flex-col items-center justify-center py-10">
       <div className="w-full max-w-md">
-        <p className="mb-3 text-lg font-medium text-[#71717A]">Files Uploaded:</p>
+        <p className="mb-3 text-lg font-medium text-[#71717A] text-center">Files Uploaded:</p>
         
         <div className="flex flex-col items-start mb-4">
           {files.map((file, index) => (
@@ -99,12 +100,12 @@ export default function FilesUploaded({
           </button> */}
           
           <div className="flex justify-center space-x-4 w-full">
-            <button 
+            {/* <button 
               onClick={onReset}
               className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-1.5 mt-2 px-4 rounded text-sm w-32"
             >
               Reset
-            </button>
+            </button> */}
             <button 
               onClick={handleSubmit}
               className="bg-[#18181B] hover:bg-gray-900 text-white py-1.5 mt-2 px-4 rounded text-sm w-32"
