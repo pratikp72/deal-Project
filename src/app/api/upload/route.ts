@@ -4,11 +4,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Import pdf-parse with a different approach
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
+// import pdfParse from "pdf-parse";
 
 // Check the API key is available
 const apiKey = process.env.GOOGLE_API_KEY;
 if (!apiKey) {
-  console.error("GOOGLE_API_KEY is not set in environment variables");
+  // console.error("GOOGLE_API_KEY is not set in environment variables");
 }
 
 // Initialize the Gemini API
@@ -18,17 +19,17 @@ const genAI = new GoogleGenerativeAI(apiKey!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export async function POST(request: NextRequest) {
-  console.log("Received upload request");
+  // console.log("Received upload request");
   try {
     const formData = await request.formData();
     const files = formData.getAll("files");
-    console.log("Files received:", files.length);
+    // console.log("Files received:", files.length);
 
     const summaries = [];
 
     for (const file of files) {
       if (file instanceof File && file.type === "application/pdf") {
-        console.log("Processing file:", file.name, file.size);
+        // console.log("Processing file:", file.name, file.size);
 
         try {
           // Read file as array buffer and convert to Buffer
@@ -40,24 +41,85 @@ export async function POST(request: NextRequest) {
             max: 0, // No page limit
           });
 
-          console.log("PDF parsed successfully, pages:", pdfData.numpages);
+          // console.log("PDF parsed successfully, pages:", pdfData.numpages);
           const extractedText = pdfData.text;
 
           // Format a prompt that asks for structured information
-          const prompt = `You are a helpful assistant trained to analyze and summarize complex business and real estate documents. Analyze the following PDF content in detail and provide a comprehensive brief that includes:
+          const prompt = `You are a highly intelligent assistant trained to extract key structured business data from real estate offering memorandums. From the content below, extract the relevant information and return it in a clear, structured JSON format that matches this schema for display in a dashboard:
 
-1. **Executive Summary** – Describe the purpose of the document, who it's intended for, and what opportunity or subject it covers.
-2. **Property Overview** – Include key facts about the property such as location, tenant, lease terms, building specs, financials, etc.
-3. **Market Insights** – Highlight information related to e-commerce trends, industrial/logistics demand, and NYC borough logistics.
-4. **Investment Rationale** – Explain why this property might be attractive to investors, including financial returns, risk, and value drivers.
-5. **Comparables & Financials** – Summarize the comps and projected financials or net operating income mentioned.
-6. **Strategic Importance to Amazon** – Elaborate on why this property is considered mission critical in Amazon’s logistics strategy.
-7. **Sentiment Analysis** – Briefly indicate the overall tone of the document (positive, neutral, negative) and reasoning.
+{
+  "title": "Property Name and Location",
+  "updatedDate": "Date",
+  "propertyType": "Type (e.g., Warehouse)",
+  "summary": "A brief summary of the opportunity (2–3 sentences)",
+  "overview": {
+    "seller": "Seller Name",
+    "guidancePrice": "$",
+    "pricePSF": "$",
+    "capRate": "%",
+    "propertySize": "Sq ft",
+    "landArea": "Acres",
+    "zoning": "Zoning"
+  },
+  "tenant": {
+    "name": "Tenant",
+    "size": "Sq ft",
+    "occupancyYear": "Year",
+    "occupancyRate": "%",
+    "leaseTerm": "13 Yrs (Sep 37)",
+    "rentPSF": "$ per sq ft"
+  },
+  "metrics": {
+    "projectedReturn": "%",
+    "exitMultiple": "x",
+    "leveredIRR": "%"
+  },
+  "assumptions": {
+    "purchasePrice": "$",
+    "exitCapRate": "%",
+    "financingRate": "%",
+    "holdPeriod": "Years"
+  },
+  "marketAnalysis": {
+    "submarket": "Location",
+    "vacancy": "%",
+    "marketRent": "$",
+    "marketCapRate": "%"
+  },
+  "leaseTerms": {
+    "rent": "$",
+    "term": "13 Yrs",
+    "escalations": "%",
+    "markToMarketOpportunity": "%"
+  },
+  "supplyPipeline": [
+    {
+      "address": "Address",
+      "submarket": "Submarket",
+      "deliveryDate": "Date",
+      "owner": "Owner",
+      "size": "Sq ft"
+    }
+  ],
+  "saleComparables": [
+    {
+      "address": "Address",
+      "submarket": "Submarket",
+      "date": "Month-Year",
+      "sf": "Size",
+      "ppsf": "$",
+      "capRate": "%",
+      "owner": "Buyer",
+      "tenant": "Tenant"
+    }
+  ]
+}
 
-Avoid redundancy and do not rephrase the full content — your task is to *synthesize* it into a structured, business-level briefing. Write in **professional tone**.
+Avoid repetition. Do not generate markdown. Return **only the JSON** based on this structure. Focus on accuracy and extract only what's clearly stated in the PDF.
 
 PDF Content:
-${extractedText.substring(0, 25000)}`;
+${extractedText.substring(0, 25000)}
+`;
 
           // Call Gemini API with the updated model name
           const result = await model.generateContent(prompt);
@@ -95,7 +157,7 @@ ${extractedText.substring(0, 25000)}`;
             },
           });
         } catch (pdfError) {
-          console.error(`Error processing PDF ${file.name}:`, pdfError);
+          // console.error(`Error processing PDF ${file.name}:`, pdfError);
           // Add error information to the summaries
           summaries.push({
             fileName: file.name,
@@ -117,7 +179,7 @@ ${extractedText.substring(0, 25000)}`;
       results: summaries,
     });
   } catch (error) {
-    console.error("Error in upload handler:", error);
+    // console.error("Error in upload handler:", error);
     return NextResponse.json(
       {
         error: "Failed to process upload",
