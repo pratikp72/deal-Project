@@ -17,7 +17,7 @@ export default function ImageSummary({ summaryData }: ImageComponentProps) {
   if (!parsedJSON) return null;
 
   const tenant = parsedJSON.tenant || {};
-  const overview = parsedJSON.overview || {};
+  // const overview = parsedJSON.overview || {};
   const propertyTitle = parsedJSON.title || "Unknown Property";
 
   return (

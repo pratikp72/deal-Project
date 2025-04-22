@@ -464,7 +464,7 @@ export const SupplyPipeline: React.FC<ImageComponentProps> = ({ summaryData }) =
 
   // Use dynamic data if available, otherwise fall back to static data
   const supplyData: SupplyData[] = parsedJSON?.supplyPipeline?.length > 0
-    ? parsedJSON.supplyPipeline.map((item: any) => ({
+    ? parsedJSON.supplyPipeline.map((item: { address?: string; submarket?: string; deliveryDate?: string; owner?: string; size?: string; sf?: string }) => ({
         address: item.address || "N/A",
         submarket: item.submarket || "N/A",
         deliveryDate: item.deliveryDate || "N/A",
@@ -479,7 +479,7 @@ export const SupplyPipeline: React.FC<ImageComponentProps> = ({ summaryData }) =
       // Get first 4 items from dynamic data
       const data = parsedJSON.saleComparables
         .slice(0, 4)
-        .map((item: any) => ({
+        .map((item: { address?: string; submarket?: string; deliveryDate?: string; owner?: string; size?: string; sf?: string; date? : string; tenant: string; ppsf:string; pp:string }) => ({
           address: item.address || "N/A",
           submarket: item.submarket || "N/A",
           date: item.date || "N/A",
