@@ -1,5 +1,5 @@
 // components/FilesUploaded.tsx
-import React, { JSX } from 'react';
+import React, { JSX, useState } from 'react';
 
 // Define types for our component props and file objects
 interface UploadedFile {
@@ -10,12 +10,22 @@ interface UploadedFile {
   url: string;
 }
 
+interface SummaryResult {
+  fileName: string;
+  summary: {
+    title: string;
+    summary: string;
+    keyPoints: string[];
+    sentiment: string;
+  };
+}
+
 interface FilesUploadedProps {
   files: UploadedFile[];
   onReset: () => void;
   onRemoveFile: (index: number) => void;
   onAddMore: () => void;
-  onSubmit?: (formData: FormData) => void;
+  onSummaryReceived?: (results: SummaryResult[]) => void;
 }
 
 export default function FilesUploaded({
@@ -23,8 +33,11 @@ export default function FilesUploaded({
   onRemoveFile,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAddMore,
-  onSubmit
+  onSummaryReceived
 }: FilesUploadedProps): JSX.Element {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Helper function to get the appropriate icon based on file type
   const getFileIcon = (fileType: string): string => {
     if (fileType.includes('pdf')) {
@@ -38,29 +51,52 @@ export default function FilesUploaded({
     ) {
       return "excel.png";
     } else if (fileType.includes('image')) {
-      return "image.png"; // You'll need this icon
+      return "image.png";
     } else if (fileType.includes('word') || fileType.includes('doc')) {
-      return "doc.png"; // You'll need this icon
+      return "doc.png";
     } else {
       return "file.png"; // Generic file icon
     }
   };
 
-  const handleSubmit = (): void => {
-    // Here you can implement your Multer upload logic
-    const formData = new FormData();
-    files.forEach(fileObj => {
-      formData.append('files', fileObj.file);
-    });
-    
-    // Then send to your backend
-    // const response = await fetch('/api/upload', {
-    //   method: 'POST',  
-    //   body: formData
-    // });
+  const handleSubmit = async (): Promise<void> => {
+    if (files.length === 0) {
+      setError('Please upload at least one file');
+      return;
+    }
 
-    // Call the onSubmit prop if provided
-    if (onSubmit) onSubmit(formData);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Create FormData and append files
+      const formData = new FormData();
+      files.forEach(fileObj => {
+        formData.append('files', fileObj.file);
+      });
+      
+      // Send to our Next.js API route
+      const response = await fetch('/api/upload', {
+        method: 'POST',  
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload files');
+      }
+
+      const data = await response.json();
+      
+      if (data.success && onSummaryReceived) {
+        onSummaryReceived(data.results);
+      } else {
+        setError('Failed to process files');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,26 +126,22 @@ export default function FilesUploaded({
           ))}
         </div>
         
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
+        
         <div className="flex flex-col items-center space-y-2 w-full">
-          {/* <button 
-            onClick={onAddMore}
-            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-1.5 px-4 rounded text-sm w-full max-w-xs"
-          >
-            Add More Files
-          </button> */}
-          
           <div className="flex justify-center space-x-4 w-full">
-            {/* <button 
-              onClick={onReset}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-1.5 mt-2 px-4 rounded text-sm w-32"
-            >
-              Reset
-            </button> */}
             <button 
               onClick={handleSubmit}
-              className="bg-[#18181B] hover:bg-gray-900 text-white py-1.5 mt-2 px-4 rounded text-sm w-32"
+              disabled={isLoading}
+              className={`${
+                isLoading ? 'bg-gray-500' : 'bg-[#18181B] hover:bg-gray-900'
+              } text-white py-1.5 mt-2 px-4 rounded text-sm w-32 flex items-center justify-center`}
             >
-              Submit
+              {isLoading ? 'Processing...' : 'Submit'}
             </button>
           </div>
         </div>
