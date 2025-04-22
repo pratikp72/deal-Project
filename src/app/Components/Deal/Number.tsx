@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { ImageComponentProps } from './ImageComponent';
 
 const Icons = [
   { icon: "/irr.svg" },
@@ -39,7 +40,8 @@ function MetricCard({
   );
 }
 
-function Number() {
+  export const Number: React.FC<ImageComponentProps> = ({ summaryData }) => {
+    console.log(`summaryData`, summaryData);
   return (
     <>
       <div className="flex items-center justify-center bg-gray-50">

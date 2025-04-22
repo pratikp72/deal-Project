@@ -1,6 +1,10 @@
 import React from 'react';
+import { ImageComponentProps } from './ImageComponent';
 
-export default function ImageSummary() {
+
+
+export default function ImageSummary({ summaryData }: ImageComponentProps) {
+  console.log(`summaryData`, summaryData);
   return (
     <div className=" max-w-full flex flex-col lg:flex-row bg-white  overflow-hidden ">
 

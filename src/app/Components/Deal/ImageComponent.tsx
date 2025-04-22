@@ -1,6 +1,11 @@
 import React from 'react';
 
-export const ImageComponent = () => {
+export interface ImageComponentProps {
+  summaryData: unknown; // Replace 'any' with the actual type if known
+}
+
+export const ImageComponent: React.FC<ImageComponentProps> = ({ summaryData }) => {
+  console.log(`summaryData`, summaryData);
   const statItems = [
     { icon: "/person.svg", label: "Seller", value: "Thor Equities" },
     { icon: "/doller.svg", label: "Guidance Price", value: "$143,000,000" },
@@ -68,4 +73,4 @@ export const ImageComponent = () => {
   );
 };
 
-export default ImageComponent;
+export default ImageComponent;  
